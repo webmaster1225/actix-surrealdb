@@ -1,10 +1,7 @@
-use actix_web::{ get, post, web, App, HttpResponse, HttpServer, Responder };
-use once_cell::sync::Lazy;
+use actix_web::{ get, post, delete, web, HttpResponse, Responder };
 use serde::{ Deserialize, Serialize };
 use serde_json::Value;
-use surrealdb::engine::remote::ws::{ Client, Ws };
-use surrealdb::{ Surreal, Error };
-use surrealdb::opt::auth::Root;
+use surrealdb::Error;
 use crate::DB;
 
 #[derive(Serialize, Deserialize)]
@@ -18,8 +15,8 @@ struct Table {
 }
 
 #[post("/create_table")]
-pub async fn create_table(table: web::Json<CreateTableRequest>) -> impl Responder {
-    let result: Result<Vec<Value>, Error> = DB.create("table").content(table).await;
+async fn create_table(table: web::Json<CreateTableRequest>) -> impl Responder {
+    let result: Result<Vec<Value>, Error> = DB.create(table.name.clone()).content(table).await;
 
     match result {
         Ok(response) => HttpResponse::Ok().json(response),
@@ -27,12 +24,17 @@ pub async fn create_table(table: web::Json<CreateTableRequest>) -> impl Responde
     }
 }
 
-#[delete("/remove_table")]
-pub async fn remove_table(table: web::Json<CreateTableRequest>) -> impl Responder {
-    let result: Result<Vec<Value>, Error> = DB.create("table").content(table).await;
+#[delete("/delete_table")]
+async fn delete_table(path: web::Path<Table>) -> impl Responder {
+    let table_name = path.name.clone();
+    let result: Result<Vec<Value>, Error> = DB.delete(table_name).await;
 
     match result {
-        Ok(response) => HttpResponse::Ok().json(response),
-        Err(e) => { HttpResponse::InternalServerError().body(format!("Error: {}", e)) }
+        Ok(response) => HttpResponse::Ok().json(format!("Table with name {} deleted", table_name)),
+        Err(e) => {
+            HttpResponse::InternalServerError().body(
+                format!("Table with name {} not found", table_name)
+            )
+        }
     }
 }

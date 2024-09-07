@@ -1,14 +1,11 @@
 mod model;
 mod routes;
 mod db;
-
-use actix_web::{ get, post, web, App, HttpResponse, HttpServer, Responder };
-use once_cell::sync::Lazy;
-use serde::{ Deserialize, Serialize };
-use serde_json::Value;
-use surrealdb::engine::remote::ws::{ Client, Ws };
+use routes::table;
+use actix_web::{ App, HttpServer };
+use serde::Serialize;
+use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
-use surrealdb::{ Error, Surreal };
 use db::db::DB;
 
 #[derive(Debug, Serialize)]
@@ -37,11 +34,7 @@ async fn main() -> std::io::Result<()> {
 
     println!("Starting Actix server on http://127.0.0.1:8081");
     HttpServer::new(move || {
-        App::new()
-            .service(index)
-            .service(insert_person)
-            .service(query_person)
-            .service(routes::table::create_table)
+        App::new().service(table::create_table).service(table::delete_table)
     })
         .bind("127.0.0.1:8081")?
         .run().await
