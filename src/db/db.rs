@@ -3,7 +3,7 @@ use surrealdb::{ engine::remote::ws::Ws, Surreal };
 use std::fs::File;
 use std::io::{ Write, Error };
 use surrealdb::engine::remote::ws::Client;
-
+use serde::Serialize;
 // async fn create_surrealdb(
 //     surql_file_path: &str,
 //     url: &str,

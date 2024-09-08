@@ -1,9 +1,10 @@
 mod model;
 mod routes;
 mod db;
-use routes::table;
+use routes::table::{ self, update_table };
 use actix_web::{ App, HttpServer };
 use serde::Serialize;
+use surrealdb::method::Update;
 use surrealdb::opt::auth::Root;
 use surrealdb::{ engine::remote::ws::Ws, Surreal };
 use std::fs::File;
@@ -30,10 +31,12 @@ async fn main() -> std::io::Result<()> {
     println!("Setup complete!");
 
     println!("Starting Actix server on http://127.0.0.1:8081");
-    let queries = fs::read_to_string("queries.surql")?;
-    DB.query(&queries).await;
     HttpServer::new(move || {
-        App::new().service(table::create_table).service(table::delete_table)
+        App::new()
+            .service(table::create_table)
+            .service(table::delete_table)
+            // .service(table::duplicate_table)
+            .service(update_table)
     })
         .bind("127.0.0.1:8081")?
         .run().await
