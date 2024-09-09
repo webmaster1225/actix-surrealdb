@@ -32,6 +32,8 @@ async fn main() -> std::io::Result<()> {
             .service(table::delete_table)
             // .service(table::duplicate_table)
             .service(table::update_cell)
+            .service(table::add_column)
+            .service(table::add_row)
     })
         .bind("127.0.0.1:8081")?
         .run().await

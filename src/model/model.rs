@@ -12,11 +12,23 @@ pub enum ContentType {
     Attachment,
     Subtask,
 }
-
+impl Default for ContentType {
+    fn default() -> Self {
+        ContentType::Text
+    }
+}
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
 pub struct Cell {
     pub content: Vec<String>,
     pub content_type: ContentType,
+}
+impl Default for Cell {
+    fn default() -> Self {
+        Cell {
+            content: vec![],
+            content_type: ContentType::default(),
+        }
+    }
 }
 #[derive(Atom, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Table {
