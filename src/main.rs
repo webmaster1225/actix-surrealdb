@@ -1,15 +1,10 @@
 mod model;
 mod routes;
 mod db;
-use routes::table::{ self, update_table };
+use routes::table;
 use actix_web::{ App, HttpServer };
-use serde::Serialize;
-use surrealdb::method::Update;
 use surrealdb::opt::auth::Root;
 use surrealdb::{ engine::remote::ws::Ws, Surreal };
-use std::fs::File;
-use std::fs;
-use std::io::{ Write, Error };
 use db::db::DB;
 
 #[actix_web::main]
@@ -36,7 +31,7 @@ async fn main() -> std::io::Result<()> {
             .service(table::create_table)
             .service(table::delete_table)
             // .service(table::duplicate_table)
-            .service(update_table)
+            .service(table::update_cell)
     })
         .bind("127.0.0.1:8081")?
         .run().await
