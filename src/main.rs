@@ -1,7 +1,8 @@
 mod model;
 mod routes;
 mod db;
-use routes::table;
+use std::mem::take;
+
 use actix_web::{ App, HttpServer };
 use surrealdb::opt::auth::Root;
 use surrealdb::{ engine::remote::ws::Ws, Surreal };
@@ -28,12 +29,14 @@ async fn main() -> std::io::Result<()> {
     println!("Starting Actix server on http://127.0.0.1:8081");
     HttpServer::new(move || {
         App::new()
-            .service(table::create_table)
-            .service(table::delete_table)
-            .service(table::duplicate_table)
-            .service(table::update_cell)
-            .service(table::add_column)
-            .service(table::add_row)
+            .service(routes::table::create_table)
+            .service(routes::table::remove_table)
+            .service(routes::table::delete_table)
+            .service(routes::table::duplicate_table)
+            .service(routes::column::add_column)
+            .service(routes::column::update_column)
+            .service(routes::row::add_row)
+            .service(routes::cell::update_cell)
     })
         .bind("127.0.0.1:8081")?
         .run().await
