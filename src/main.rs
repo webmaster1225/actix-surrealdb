@@ -27,9 +27,11 @@ async fn main() -> std::io::Result<()> {
 
     println!("Starting Actix server on http://127.0.0.1:8081");
     HttpServer::new(move || {
-        App::new().service(table::create_table).service(table::delete_table)
-        // .service(table::duplicate_table)
-        // .service(table::update_cell)
+        App::new()
+            .service(table::create_table)
+            .service(table::delete_table)
+            // .service(table::duplicate_table)
+            .service(table::update_cell)
     })
         .bind("127.0.0.1:8081")?
         .run().await
