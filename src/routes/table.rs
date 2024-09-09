@@ -67,9 +67,3 @@ async fn delete_table(table_name: web::Path<String>) -> impl Responder {
         }
     }
 }
-
-#[post("/update_cell")]
-async fn update_cell(req: web::Json<UpdateCellRequest>) -> impl Responder {
-  let table = DB.select(req.table_name).;
-  table.
-}
