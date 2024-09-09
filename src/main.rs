@@ -29,6 +29,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .service(routes::table::create_table)
+            .service(routes::table::rename_table)
             .service(routes::table::remove_table)
             .service(routes::table::delete_table)
             .service(routes::table::duplicate_table)

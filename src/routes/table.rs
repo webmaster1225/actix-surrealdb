@@ -10,6 +10,12 @@ use crate::model::model::Table;
 pub struct CreateTableRequest {
     pub name: String,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct RenameTableRequest {
+    pub new_table_name: String,
+    pub old_table_name: String,
+}
 #[derive(Deserialize)]
 struct DuplicateRequest {
     table_name: String,
@@ -32,6 +38,29 @@ async fn create_table(table: web::Json<CreateTableRequest>) -> impl Responder {
             }
         }
         Err(e) => { HttpResponse::InternalServerError().body(format!("Error: {}", e)) }
+    }
+}
+
+#[post("/rename_table")]
+async fn rename_table(req: web::Json<RenameTableRequest>) -> impl Responder {
+    let old_table_name = &req.old_table_name;
+    let new_table_name = &req.new_table_name;
+
+    // Step 1: Copy data from old table to new table
+    let copy_data = format!("INSERT INTO {} SELECT * FROM {};", new_table_name, old_table_name);
+    if let Err(e) = DB.query(copy_data).await {
+        return HttpResponse::InternalServerError().body(format!("Failed to copy data: {}", e));
+    }
+
+    // Step 2: Drop old table
+    let drop_old_table = format!("REMOVE TABLE {};", old_table_name);
+    match DB.query(drop_old_table).await {
+        Ok(_) =>
+            HttpResponse::Ok().body(
+                format!("Table '{}' renamed to '{}'", old_table_name, new_table_name)
+            ),
+        Err(e) =>
+            HttpResponse::InternalServerError().body(format!("Failed to drop old table: {}", e)),
     }
 }
 
