@@ -22,7 +22,7 @@ async fn create_table(table: web::Json<CreateTableRequest>) -> impl Responder {
         model::Table::default()
     ).await;
     match result {
-        Ok(response) => {
+        Ok(_) => {
             let update_result: Result<Vec<Value>, Error> = DB.update(table.name.to_string()).merge(
                 json!({"name": table.name})
             ).await;
@@ -41,8 +41,8 @@ async fn remove_table(table_name: web::Path<String>) -> impl Responder {
     let delete_result: Result<Vec<Value>, Error> = DB.delete(&table_name).await;
 
     match delete_result {
-        Ok(response) => HttpResponse::Ok().json(format!("Table with name {} removed", &table_name)),
-        Err(e) => {
+        Ok(_) => HttpResponse::Ok().json(format!("Table with name {} removed", &table_name)),
+        Err(_e) => {
             HttpResponse::InternalServerError().body(
                 format!("Table with name {} not found", table_name)
             )

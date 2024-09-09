@@ -1,11 +1,10 @@
 mod model;
 mod routes;
 mod db;
-use std::mem::take;
 
 use actix_web::{ App, HttpServer };
 use surrealdb::opt::auth::Root;
-use surrealdb::{ engine::remote::ws::Ws, Surreal };
+use surrealdb::engine::remote::ws::Ws;
 use db::db::DB;
 
 #[actix_web::main]

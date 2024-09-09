@@ -1,9 +1,9 @@
-use actix_web::{ post, web, HttpResponse, Responder };
+use actix_web::{ put, web, HttpResponse, Responder };
 use serde::Deserialize;
 use serde_json::json;
 use surrealdb::Error;
 use crate::DB;
-use crate::model::model::Table;
+use crate::model::model::{ ContentType, Table };
 
 #[derive(Deserialize)]
 struct UpdateCellRequest {

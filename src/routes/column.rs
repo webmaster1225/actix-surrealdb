@@ -1,6 +1,6 @@
 use actix_web::{ post, web, HttpResponse, Responder };
 use serde::Deserialize;
-use serde_json::Value;
+use serde_json::json;
 use surrealdb::Error;
 use crate::{ model::model::Cell, DB };
 use crate::model::model::{ ContentType, Table };
