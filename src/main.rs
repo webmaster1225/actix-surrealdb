@@ -30,7 +30,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(table::create_table)
             .service(table::delete_table)
-            // .service(table::duplicate_table)
+            .service(table::duplicate_table)
             .service(table::update_cell)
             .service(table::add_column)
             .service(table::add_row)
