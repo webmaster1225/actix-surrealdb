@@ -35,7 +35,9 @@ async fn main() -> std::io::Result<()> {
             .service(routes::table::duplicate_table)
             .service(routes::column::add_column)
             .service(routes::column::update_column)
+            .service(routes::column::delete_column)
             .service(routes::row::add_row)
+            .service(routes::row::delete_row)
             .service(routes::cell::update_cell)
     })
         .bind("127.0.0.1:8081")?

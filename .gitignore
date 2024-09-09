@@ -4,4 +4,4 @@ perf.data
 perf.data.old
 flamegraph.svg
 history.txt
-/mydatabase.db
+/airtable.db
